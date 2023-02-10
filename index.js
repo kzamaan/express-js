@@ -2,23 +2,18 @@
  * @Author: Kamruzzaman
  * @Date: 2023-02-10 15:08:31
  * @Last Modified by: Kamruzzaman
- * @Last Modified time: 2023-02-10 15:09:00
+ * @Last Modified time: 2023-02-10 19:04:01
  */
 
 const express = require('express');
+const router = require('./router');
 
 const app = express();
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(router);
 
-app.get('/', (req, res) => {
-    console.log(req.body);
-    res.send({ message: 'Hello World', ...req.body });
-});
-app.get('/user/:id', (req, res) => {
-    console.log(req.params);
-    res.send({ message: 'Hello World', ...req.params });
-});
-
+// start server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
