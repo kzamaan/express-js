@@ -1,19 +1,26 @@
 {
-	"name": "express-practice",
+	"name": "node-basic",
 	"version": "1.0.0",
-	"description": "Nodejs, Expressjs",
+	"description": "Simple nodejs project",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon index.js",
+		"start": "NODE_ENV=staging nodemon index",
+		"production": "NODE_ENV=production nodemon index",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [
-		"node",
-		"express"
+		"Express App"
 	],
-	"author": "Kamruzzaman",
-	"license": "MIT",
+	"author": "Kamruzzaman<kzamanbn@gmail.com>",
 	"dependencies": {
-		"express": "^4.18.2"
+		"express": "^4.18.1"
+	},
+	"devDependencies": {
+		"eslint": "^8.2.0",
+		"eslint-config-airbnb-base": "^15.0.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-import": "^2.25.2",
+		"eslint-plugin-prettier": "^4.2.1",
+		"prettier": "^2.7.1"
 	}
 }

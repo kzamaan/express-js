@@ -1,7 +1,14 @@
+/*
+ * @Author: Kamruzzaman
+ * @Date: 2023-02-10 15:08:31
+ * @Last Modified by: Kamruzzaman
+ * @Last Modified time: 2023-02-10 15:09:00
+ */
+
 const express = require('express');
 
 const app = express();
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
     console.log(req.body);
