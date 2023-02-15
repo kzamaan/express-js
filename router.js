@@ -5,9 +5,13 @@ const express = require('express');
 const router = express.Router();
 
 // routes
-router.get('/create', (req, res) => {
+router.get('/', (req, res) => {
     console.log(req.body);
-    res.send({ message: 'Hello World', ...req.body });
+    res.json({ message: 'Hello World', ...req.body });
+});
+router.get('/register', (req, res) => {
+    console.log(req.body);
+    res.json({ message: 'Hello World', ...req.body });
 });
 
 router.get('/user/:id', (req, res) => {
