@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.get('/videos', auth, getVideoList);
+router.get('/videos', getVideoList);
 router.get('/quiz', auth, getQuizList);
 router.get('/answers', auth, getAnswerList);
 
