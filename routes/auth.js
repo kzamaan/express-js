@@ -1,9 +1,12 @@
 // dependency imports
 const express = require('express');
-// const bcrypt = require('bcrypt');
+const { login, logout } = require('../controllers/AuthController');
 
 const router = express.Router();
 const User = require('../models/User');
+
+router.post('/login', login);
+router.get('/logout', logout);
 
 // routes
 router.get('/users', (req, res) => {

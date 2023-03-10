@@ -1,6 +1,7 @@
 // dependency imports
 const express = require('express');
 const { getVideoList, getQuizList, getAnswerList } = require('../controllers/HomeController');
+const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -12,8 +13,8 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.get('/videos', getVideoList);
-router.get('/quiz', getQuizList);
-router.get('/answers', getAnswerList);
+router.get('/videos', auth, getVideoList);
+router.get('/quiz', auth, getQuizList);
+router.get('/answers', auth, getAnswerList);
 
 module.exports = router;

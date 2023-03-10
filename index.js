@@ -2,8 +2,9 @@ const path = require('path');
 const dotEnv = require('dotenv');
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const baseRoutes = require('./routes/index');
-const userRoute = require('./routes/userRoute');
+const userRoute = require('./routes/auth');
 const { notFoundErrorHandler, errorHandler } = require('./controllers/ErrorHandler');
 
 // init express
@@ -15,8 +16,11 @@ dotEnv.config();
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
+// parse cookies
+app.use(cookieParser(process.env.COOKIE_SECRET));
+
 // set database connection
-const connectionStr = 'mongodb://localhost:27017/express_quiz';
+const connectionStr = process.env.MONGO_CONNECTION;
 mongoose.set('strictQuery', true);
 
 try {
@@ -36,6 +40,6 @@ app.use(notFoundErrorHandler);
 app.use(errorHandler);
 
 // start server
-app.listen(8000, () => {
-	console.log('Server is running on http://localhost:8000');
+app.listen(process.env.APP_PORT, () => {
+	console.log(`Server is running on http://localhost:${process.env.APP_PORT}`);
 });

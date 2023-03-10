@@ -26,7 +26,8 @@
                     "||": "before"
                 }
             }
-        ]
+        ],
+        "no-underscore-dangle": 0
     },
     "plugins": [
         "prettier"

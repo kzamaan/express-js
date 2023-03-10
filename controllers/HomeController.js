@@ -1,4 +1,4 @@
-const Video = require('../models/User');
+const Video = require('../models/Video');
 const Quiz = require('../models/Quiz');
 const Answer = require('../models/Answer');
 
