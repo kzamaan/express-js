@@ -3,7 +3,7 @@ const express = require('express');
 // const bcrypt = require('bcrypt');
 
 const router = express.Router();
-const User = require('../app/Models/User');
+const User = require('../models/User');
 
 // routes
 router.get('/users', (req, res) => {

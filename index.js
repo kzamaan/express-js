@@ -2,7 +2,7 @@
  * @Author: Kamruzzaman
  * @Date: 2023-02-10 15:08:31
  * @Last Modified by: Kamruzzaman
- * @Last Modified time: 2023-03-10 11:57:33
+ * @Last Modified time: 2023-03-10 14:11:24
  */
 const path = require('path');
 const dotEnv = require('dotenv');
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => {
-	console.error(err);
+	console.error('Error Message', err?.message);
 	if (res.headersSent) {
 		next(err);
 	} else if (err.message) {
@@ -50,6 +50,7 @@ app.use((err, req, res, next) => {
 		res.status(500).send({ error: err });
 	}
 });
+
 // start server
 app.listen(8000, () => {
 	console.log('Server is running on http://localhost:8000');

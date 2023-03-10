@@ -1,11 +1,11 @@
-const Video = require('../Models/Video');
-const Quiz = require('../Models/Quiz');
-const Answer = require('../Models/Answer');
+const Video = require('../models/User');
+const Quiz = require('../models/Quiz');
+const Answer = require('../models/Answer');
 
 // module scaffolding
-const config = {};
+const handler = {};
 
-config.testMethod = (req, res) => {
+handler.testMethod = (req, res) => {
 	const { videos, quiz, answers } = req.body;
 
 	if (videos?.length > 0) {
@@ -64,7 +64,7 @@ config.testMethod = (req, res) => {
 	}
 };
 
-config.getVideoList = (req, res) => {
+handler.getVideoList = (req, res) => {
 	Video.find({}, (error, videos) => {
 		if (error) {
 			res.status(500).json({
@@ -82,7 +82,7 @@ config.getVideoList = (req, res) => {
 	});
 };
 
-config.getQuizList = (req, res) => {
+handler.getQuizList = (req, res) => {
 	Quiz.find({}, (error, quizzes) => {
 		if (error) {
 			res.status(500).json({
@@ -100,7 +100,7 @@ config.getQuizList = (req, res) => {
 	});
 };
 
-config.getAnswerList = (req, res) => {
+handler.getAnswerList = (req, res) => {
 	Answer.find({}, (error, answers) => {
 		if (error) {
 			res.status(500).json({
@@ -118,4 +118,4 @@ config.getAnswerList = (req, res) => {
 	});
 };
 
-module.exports = config;
+module.exports = handler;

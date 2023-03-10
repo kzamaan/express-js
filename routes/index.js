@@ -1,6 +1,6 @@
 // dependency imports
 const express = require('express');
-const { getVideoList, getQuizList, getAnswerList } = require('../app/Controllers/HomeController');
+const { getVideoList, getQuizList, getAnswerList } = require('../controllers/HomeController');
 
 const router = express.Router();
 
