@@ -4,7 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const dotEnv = require('dotenv');
 const express = require('express');
-const mongoose = require('mongoose');
+
 const cookieParser = require('cookie-parser');
 const baseRoutes = require('@routes/index');
 const userRoute = require('@routes/auth');
@@ -26,16 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // set database connection
-(async () => {
-	const connectionStr = process.env.MONGO_URI;
-	mongoose.set('strictQuery', true);
-	try {
-		await mongoose.connect(connectionStr, { useNewUrlParser: true });
-		console.log('MongoDB connected');
-	} catch (err) {
-		console.log(err);
-	}
-})();
+require('@config/mongoose');
 
 // routes
 app.use('/api', baseRoutes);
