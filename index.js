@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 dotEnv.config();
 
 // set cors
-app.use(cors());
+app.use(cors({ credentials: true, origin: true }));
 
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -24,15 +24,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // set database connection
-const connectionStr = process.env.MONGO_CONNECTION;
-mongoose.set('strictQuery', true);
-
-try {
-	mongoose.connect(connectionStr, { useNewUrlParser: true, useUnifiedTopology: true });
-	console.log('Mongodb connected by mongoose');
-} catch (err) {
-	console.log(err);
-}
+(async () => {
+	const connectionStr = process.env.MONGO_URI;
+	mongoose.set('strictQuery', true);
+	try {
+		await mongoose.connect(connectionStr, { useNewUrlParser: true });
+		console.log('MongoDB connected');
+	} catch (err) {
+		console.log(err);
+	}
+})();
 
 // routes
 app.use('/api', baseRoutes);
@@ -44,6 +45,6 @@ app.use(notFoundErrorHandler);
 app.use(errorHandler);
 
 // start server
-app.listen(process.env.APP_PORT, () => {
-	console.log(`Server is running on http://localhost:${process.env.APP_PORT}`);
+app.listen(process.env.PORT, () => {
+	console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });

@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
+	id: Number,
 	name: String,
-	email: String,
-	username: String,
-	password: String,
-	profile_photo_path: String,
-	email_verified_at: Date,
-	remember_token: String,
+	mobile: String,
+	address: String,
+	e_tin: String,
+	tin_date: Date,
+	police_station: String,
+	circle_name: Date,
 	created_at: {
 		type: Date,
 		default: Date.now()
@@ -18,4 +19,4 @@ const schema = new mongoose.Schema({
 	}
 });
 
-module.exports = mongoose.model('User', schema);
+module.exports = mongoose.model('Contact', schema);

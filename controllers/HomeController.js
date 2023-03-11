@@ -1,6 +1,7 @@
 const Video = require('../models/Video');
 const Quiz = require('../models/Quiz');
 const Answer = require('../models/Answer');
+const Contact = require('../models/Contact');
 
 // module scaffolding
 const handler = {};
@@ -65,7 +66,7 @@ handler.testMethod = (req, res) => {
 };
 
 handler.getVideoList = (req, res) => {
-	Video.find({}, (error, videos) => {
+	Video.find({}, (error, docs) => {
 		if (error) {
 			res.status(500).json({
 				success: false,
@@ -76,14 +77,14 @@ handler.getVideoList = (req, res) => {
 			res.status(200).json({
 				success: true,
 				message: 'Videos fetched successfully',
-				videos
+				videos: docs
 			});
 		}
 	});
 };
 
 handler.getQuizList = (req, res) => {
-	Quiz.find({}, (error, quizzes) => {
+	Quiz.find({}, (error, docs) => {
 		if (error) {
 			res.status(500).json({
 				success: false,
@@ -94,14 +95,14 @@ handler.getQuizList = (req, res) => {
 			res.status(200).json({
 				success: true,
 				message: 'Quiz fetched successfully',
-				quizzes
+				quizzes: docs
 			});
 		}
 	});
 };
 
 handler.getAnswerList = (req, res) => {
-	Answer.find({}, (error, answers) => {
+	Answer.find({}, (error, docs) => {
 		if (error) {
 			res.status(500).json({
 				success: false,
@@ -112,10 +113,27 @@ handler.getAnswerList = (req, res) => {
 			res.status(200).json({
 				success: true,
 				message: 'Answers fetched successfully',
-				answers
+				answers: docs
 			});
 		}
 	});
+};
+
+handler.getContactsList = async (req, res) => {
+	try {
+		const docs = await Contact.find({}).limit(500).exec();
+		res.status(200).json({
+			success: true,
+			message: `${docs.length} Contacts fetched successfully`,
+			contacts: docs
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error
+		});
+	}
 };
 
 module.exports = handler;
