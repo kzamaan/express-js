@@ -1,12 +1,12 @@
 // dependency imports
 const express = require('express');
-const { login, logout } = require('../controllers/auth.controller');
+const AuthController = require('@controllers/auth.controller');
 
 const router = express.Router();
-const User = require('../models/user.model');
+const User = require('@models/user.model');
 
-router.post('/login', login);
-router.get('/logout', logout);
+router.post('/login', AuthController.login);
+router.get('/logout', AuthController.logout);
 
 // routes
 router.get('/users', (req, res) => {

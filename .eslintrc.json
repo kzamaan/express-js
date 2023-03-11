@@ -27,7 +27,11 @@
                 }
             }
         ],
-        "no-underscore-dangle": 0
+        "no-underscore-dangle": 0,
+        "import/no-unresolved": {
+            "commonjs": true,
+            "amd": true
+        }
     },
     "plugins": [
         "prettier"

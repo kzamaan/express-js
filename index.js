@@ -1,12 +1,14 @@
+require('module-alias/register');
+
 const path = require('path');
 const cors = require('cors');
 const dotEnv = require('dotenv');
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const baseRoutes = require('./routes/index');
-const userRoute = require('./routes/auth');
-const { notFoundErrorHandler, errorHandler } = require('./middleware/errorHandler');
+const baseRoutes = require('@routes/index');
+const userRoute = require('@routes/auth');
+const { notFoundErrorHandler, errorHandler } = require('@middleware/errorHandler');
 
 // init express
 const app = express();

@@ -1,5 +1,4 @@
 // module scaffolding
-
 const handler = {};
 
 // 404 error handler
