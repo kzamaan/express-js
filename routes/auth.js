@@ -1,9 +1,9 @@
 // dependency imports
 const express = require('express');
-const { login, logout } = require('../controllers/AuthController');
+const { login, logout } = require('../controller/authController');
 
 const router = express.Router();
-const User = require('../models/User');
+const User = require('../model/user');
 
 router.post('/login', login);
 router.get('/logout', logout);

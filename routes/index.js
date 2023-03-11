@@ -6,8 +6,8 @@ const {
 	getAnswerList,
 	getContactsList,
 	testMethod
-} = require('../controllers/HomeController');
-const { auth } = require('../middleware/auth');
+} = require('../controller/homeController');
+const { tokenAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -20,9 +20,9 @@ router.get('/', (req, res) => {
 });
 
 router.get('/test', testMethod);
-router.get('/videos', auth, getVideoList);
-router.get('/quiz', auth, getQuizList);
-router.get('/answers', auth, getAnswerList);
+router.get('/videos', tokenAuth, getVideoList);
+router.get('/quiz', tokenAuth, getQuizList);
+router.get('/answers', tokenAuth, getAnswerList);
 router.get('/contacts', getContactsList);
 
 module.exports = router;
