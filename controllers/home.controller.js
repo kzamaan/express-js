@@ -1,7 +1,7 @@
-const Video = require('../model/video');
-const Quiz = require('../model/quiz');
-const Answer = require('../model/answer');
-const Contact = require('../model/contact');
+const Video = require('../models/video.model');
+const Quiz = require('../models/quiz.model');
+const Answer = require('../models/answer.model');
+const Contact = require('../models/contact.model');
 
 // module scaffolding
 const handler = {};

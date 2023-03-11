@@ -6,7 +6,7 @@ const {
 	getAnswerList,
 	getContactsList,
 	testMethod
-} = require('../controller/homeController');
+} = require('../controllers/home.controller');
 const { tokenAuth } = require('../middleware/auth');
 
 const router = express.Router();
