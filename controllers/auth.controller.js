@@ -75,4 +75,13 @@ handler.logout = (req, res) => {
 	});
 };
 
+// get current user
+handler.getCurrentUser = (req, res) => {
+	res.status(200).json({
+		success: true,
+		message: 'Current user',
+		user: req.authUser
+	});
+};
+
 module.exports = handler;

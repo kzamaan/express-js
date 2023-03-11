@@ -6,8 +6,8 @@ const dotEnv = require('dotenv');
 const express = require('express');
 
 const cookieParser = require('cookie-parser');
-const baseRoutes = require('@routes/index');
-const userRoute = require('@routes/auth');
+const baseRoute = require('@routes/index');
+const authRoute = require('@routes/auth');
 const { notFoundErrorHandler, errorHandler } = require('@middleware/errorHandler');
 
 // init express
@@ -29,8 +29,8 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 require('@config/mongoose');
 
 // routes
-app.use('/api', baseRoutes);
-app.use('/api/auth', userRoute);
+app.use('/api', baseRoute);
+app.use('/api/auth', authRoute);
 
 // url not found
 app.use(notFoundErrorHandler);
