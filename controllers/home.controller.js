@@ -65,22 +65,32 @@ handler.testMethod = (req, res) => {
 	}
 };
 
-handler.getVideoList = (req, res) => {
-	Video.find({}, (error, docs) => {
-		if (error) {
-			res.status(500).json({
-				success: false,
-				message: 'Internal server error',
-				error
-			});
-		} else {
+handler.getVideoList = async (req, res) => {
+	const { limit = 10, page = 1 } = req.query;
+	const skip = (page - 1) * limit;
+	try {
+		// add pagination
+		const docs = await Video.find({}).skip(skip).limit(limit).exec();
+		if (docs.length > 0) {
 			res.status(200).json({
 				success: true,
 				message: 'Videos fetched successfully',
 				videos: docs
 			});
+		} else {
+			res.status(404).json({
+				success: false,
+				message: 'No videos found',
+				videos: []
+			});
 		}
-	});
+	} catch (err) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error: err
+		});
+	}
 };
 
 handler.getQuizList = (req, res) => {

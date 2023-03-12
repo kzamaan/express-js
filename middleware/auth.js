@@ -27,15 +27,16 @@ handler.cookieAuth = (req, res, next) => {
 };
 
 handler.tokenAuth = (req, res, next) => {
-	const bearerHeader = req.headers.authorization;
-	if (bearerHeader) {
-		const splitToken = bearerHeader.split(' ');
+	const { authorization } = req.headers;
+	if (authorization) {
+		const splitToken = authorization.split(' ');
 		try {
 			const token = splitToken[1];
 			const decoded = jwt.verify(token, process.env.JWT_SECRET);
 			req.authUser = decoded;
 			next();
 		} catch (err) {
+			console.log(err?.message);
 			res.status(401).json({
 				success: false,
 				message: 'Authentication failure!'
@@ -44,7 +45,7 @@ handler.tokenAuth = (req, res, next) => {
 	} else {
 		res.status(401).json({
 			success: false,
-			message: 'Authentication failure!'
+			message: 'Authorization token required!'
 		});
 	}
 };

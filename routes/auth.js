@@ -7,6 +7,7 @@ const User = require('@models/user.model');
 
 router.post('/login', AuthController.login);
 router.get('/logout', AuthController.logout);
+router.post('/register', AuthController.register);
 
 // routes
 router.get('/users', (req, res) => {
@@ -26,29 +27,6 @@ router.get('/users', (req, res) => {
 		.catch((error) => {
 			console.log(error);
 		});
-});
-
-router.get('/register', async (req, res) => {
-	const { name, email, password } = req.body;
-	if (!name || !email) {
-		res.status(422).json({
-			error: 'Data validation error'
-		});
-	} else {
-		const user = {
-			name,
-			email,
-			password
-		};
-		try {
-			await User.create(user);
-			res.json({
-				message: 'User was successfully created.'
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	}
 });
 
 router.get('/user/:id', (req, res) => {

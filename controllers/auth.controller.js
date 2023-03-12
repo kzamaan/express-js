@@ -21,11 +21,10 @@ handler.login = async (req, res) => {
 				const userObject = {
 					id: user._id,
 					name: user.name,
-					username: user.name,
+					username: user.username,
 					email: user.email,
-					profile_photo_path: user.profile_photo_path || null,
-					created_at: user.created_at,
-					updated_at: user.updated_at
+					profile_photo_path: user.profile_photo_path,
+					created_at: user.created_at
 				};
 
 				// generate token
@@ -63,6 +62,37 @@ handler.login = async (req, res) => {
 			message: err.message,
 			success: false
 		});
+	}
+};
+
+handler.register = async (req, res) => {
+	const { name, email, password } = req.body;
+	if (!name || !email) {
+		res.status(422).json({
+			error: 'Data validation error'
+		});
+	} else {
+		const checkUser = await User.findOne({ email });
+		if (checkUser) {
+			res.status(422).json({
+				message: 'User already exists.',
+				success: false
+			});
+		}
+		const encryptedPassword = await bcrypt.hash(password, 10);
+		const user = {
+			name,
+			email,
+			password: encryptedPassword
+		};
+		try {
+			await User.create(user);
+			res.json({
+				message: 'User was successfully created.'
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	}
 };
 
