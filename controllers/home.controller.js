@@ -75,7 +75,8 @@ handler.getVideoList = async (req, res) => {
 			res.status(200).json({
 				success: true,
 				message: 'Videos fetched successfully',
-				videos: docs
+				videos: docs,
+				hasMore: docs.length === limit
 			});
 		} else {
 			res.status(404).json({
