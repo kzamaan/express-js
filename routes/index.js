@@ -16,6 +16,8 @@ router.get('/', (req, res) => {
 
 router.get('/test', HomeController.testMethod);
 router.get('/current-user', auth, AuthController.getCurrentUser);
+router.get('/logout', AuthController.logout);
+
 router.get('/videos', auth, HomeController.getVideoList);
 router.get('/quiz', auth, HomeController.getQuizList);
 router.get('/answers', auth, HomeController.getAnswerList);
