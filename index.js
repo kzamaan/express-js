@@ -1,11 +1,13 @@
 require('module-alias/register');
+require('dotenv').config();
 
 const path = require('path');
 const cors = require('cors');
-const dotEnv = require('dotenv');
 const express = require('express');
-
+const http = require('http');
+const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
+
 const baseRoute = require('@routes/index');
 const authRoute = require('@routes/auth');
 const { notFoundErrorHandler, errorHandler } = require('@middleware/errorHandler');
@@ -14,7 +16,15 @@ const { notFoundErrorHandler, errorHandler } = require('@middleware/errorHandler
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-dotEnv.config();
+const server = http.createServer(app);
+
+// add socket.io
+const io = socketIo(server, {
+	cors: {
+		origin: '*', // process.env.CLIENT_URL,
+		methods: ['GET', 'POST']
+	}
+});
 
 // set cors
 app.use(cors({ credentials: true, origin: true }));
@@ -28,9 +38,27 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 // set database connection
 require('@config/mongoose');
 
-// routes
+// api routes
 app.use('/api', baseRoute);
 app.use('/api/auth', authRoute);
+
+// initialize socket.io
+io.on('connection', (socket) => {
+	socket.emit('currentUser', socket.id);
+	console.log('New client connected', socket.id);
+
+	socket.on('disconnect', () => {
+		socket.broadcast.emit('callEnded');
+	});
+
+	socket.on('callUser', ({ userToCall, signalData, from, name }) => {
+		io.to(userToCall).emit('callUser', { signal: signalData, from, name });
+	});
+
+	socket.on('answerCall', (data) => {
+		io.to(data.to).emit('callAccepted', data.signal);
+	});
+});
 
 // url not found
 app.use(notFoundErrorHandler);
@@ -38,6 +66,6 @@ app.use(notFoundErrorHandler);
 app.use(errorHandler);
 
 // start server
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
 	console.log(`Server is running on http://localhost:${process.env.PORT}`);
 });
