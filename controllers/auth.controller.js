@@ -66,7 +66,7 @@ handler.login = async (req, res) => {
 };
 
 handler.register = async (req, res) => {
-	const { name, email, password } = req.body;
+	const { name, email, password, withLogin } = req.body;
 	if (!name || !email) {
 		res.status(422).json({
 			error: 'Data validation error'
@@ -80,15 +80,46 @@ handler.register = async (req, res) => {
 			});
 		}
 		const encryptedPassword = await bcrypt.hash(password, 10);
-		const user = {
+		const userData = {
 			name,
 			email,
 			password: encryptedPassword
 		};
 		try {
-			await User.create(user);
-			res.json({
-				message: 'User was successfully created.'
+			const user = await User.create(userData);
+			if (withLogin) {
+				const userObject = {
+					id: user._id,
+					name: user.name,
+					username: user.username,
+					email: user.email,
+					profile_photo_path: user.profile_photo_path,
+					created_at: user.created_at
+				};
+
+				// generate token
+				const accessToken = jwt.sign(userObject, process.env.JWT_SECRET, {
+					expiresIn: process.env.JWT_EXPIRY
+				});
+
+				// set cookie
+				res.cookie(process.env.COOKIE_NAME, accessToken, {
+					maxAge: process.env.JWT_EXPIRY,
+					httpOnly: true,
+					signed: true
+				});
+
+				res.status(200).json({
+					message: 'Login successful!',
+					success: true,
+					user: userObject,
+					token: accessToken
+				});
+			}
+			res.status(201).json({
+				data: user,
+				message: 'User created successfully!',
+				success: true
 			});
 		} catch (error) {
 			console.log(error);
@@ -106,7 +137,7 @@ handler.logout = (req, res) => {
 };
 
 // get current user
-handler.getCurrentUser = (req, res) => {
+handler.refreshToken = (req, res) => {
 	res.status(200).json({
 		success: true,
 		message: 'Current user',

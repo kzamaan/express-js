@@ -15,8 +15,8 @@ router.get('/', (req, res) => {
 });
 
 router.get('/test', HomeController.testMethod);
-router.get('/current-user', auth, AuthController.getCurrentUser);
-router.get('/logout', AuthController.logout);
+router.get('/refresh-token', auth, AuthController.refreshToken);
+router.get('/logout', auth, AuthController.logout);
 
 router.get('/videos', auth, HomeController.getVideoList);
 router.get('/quiz', auth, HomeController.getQuizList);
