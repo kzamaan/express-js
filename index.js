@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 
 const baseRoute = require('@routes/index');
 const authRoute = require('@routes/auth');
+const chatRoute = require('@routes/chat');
 const { notFoundErrorHandler, errorHandler } = require('@middleware/errorHandler');
 
 // init express
@@ -41,6 +42,7 @@ require('@config/mongoose');
 // api routes
 app.use('/api', baseRoute);
 app.use('/api/auth', authRoute);
+app.use('/api/chat', chatRoute);
 
 // initialize socket.io
 io.on('connection', (socket) => {

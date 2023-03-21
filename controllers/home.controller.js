@@ -2,6 +2,7 @@ const Video = require('@models/video.model');
 const Quiz = require('@models/quiz.model');
 const Answer = require('@models/answer.model');
 const Contact = require('@models/contact.model');
+const User = require('@models/user.model');
 
 // module scaffolding
 const handler = {};
@@ -61,6 +62,32 @@ handler.testMethod = (req, res) => {
 		res.status(400).json({
 			success: false,
 			message: 'Bad request'
+		});
+	}
+};
+
+handler.getUsersList = async (req, res) => {
+	try {
+		// add pagination
+		const docs = await User.find().limit(100).exec();
+		if (docs.length > 0) {
+			res.status(200).json({
+				success: true,
+				message: 'Users fetched successfully',
+				users: docs
+			});
+		} else {
+			res.status(404).json({
+				success: false,
+				message: 'No videos found',
+				users: []
+			});
+		}
+	} catch (err) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error: err
 		});
 	}
 };

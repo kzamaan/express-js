@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema(
 	{
-		toUser: {
+		userId: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
 			required: true
 		},
-		fromUser: {
+		conversationId: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
+			ref: 'Conversation',
 			required: true
 		},
-		lastMessage: {
+		message: {
 			type: String,
 			required: true
 		}
@@ -22,4 +22,4 @@ const schema = new mongoose.Schema(
 	}
 );
 
-module.exports = mongoose.model('Conversation', schema);
+module.exports = mongoose.model('Message', schema);

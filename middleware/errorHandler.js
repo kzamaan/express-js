@@ -8,13 +8,19 @@ handler.notFoundErrorHandler = (req, res, next) => {
 
 // global error handler
 handler.errorHandler = (err, req, res, next) => {
-	console.error('Error Message', err?.message);
 	if (res.headersSent) {
 		next(err);
 	} else if (err.message) {
-		res.status(500).send(err.message);
+		res.status(500).json({
+			success: false,
+			message: err.message
+		});
 	} else {
-		res.status(500).send({ error: err });
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			stack: err?.stack
+		});
 	}
 };
 
