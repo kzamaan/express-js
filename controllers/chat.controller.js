@@ -117,7 +117,7 @@ handler.sendMessage = async (req, res) => {
 				message
 			});
 
-			const savedMessage = await newMessage.save();
+			await newMessage.save();
 
 			// if conversation update last message
 			conversation.lastMessage = message;
@@ -125,7 +125,7 @@ handler.sendMessage = async (req, res) => {
 
 			global.io.emit('conversation', conversation);
 			global.io.emit(`newMessage.${conversationId}`, {
-				...savedMessage,
+				...newMessage._doc,
 				userInfo: {
 					_id: req.authUser._id,
 					name: req.authUser.name,
