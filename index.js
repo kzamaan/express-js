@@ -27,6 +27,8 @@ const io = socketIo(server, {
 	}
 });
 
+global.io = io;
+
 // set cors
 app.use(cors({ credentials: true, origin: true }));
 

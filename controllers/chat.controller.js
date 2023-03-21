@@ -40,13 +40,14 @@ handler.findConversation = async (req, res) => {
 handler.createConversation = async (req, res) => {
 	const { userId, message } = req.body;
 	try {
-		const conversation = await Conversation.findOne({
+		const existsConversation = await Conversation.findOne({
 			$or: [
 				{ toUser: userId, fromUser: req.authUser._id },
 				{ toUser: req.authUser._id, fromUser: userId }
 			]
 		});
-		if (!conversation) {
+
+		if (!existsConversation) {
 			const newConversation = new Conversation({
 				toUser: userId,
 				fromUser: req.authUser._id
@@ -66,10 +67,17 @@ handler.createConversation = async (req, res) => {
 				savedConversation.lastMessage = message;
 				await savedConversation.save();
 
+				// populate conversation toUser and fromUser
+				const populatedConversation = await Conversation.findOne({ _id: savedConversation._id })
+					.populate('toUser', 'name avatar')
+					.populate('fromUser', 'name avatar')
+					.exec();
+
+				global.io.emit('conversation', { conversation: populatedConversation });
+
 				res.status(201).json({
 					success: true,
-					conversation: savedConversation,
-					message: newMessage
+					conversation: populatedConversation
 				});
 			} else {
 				res.status(400).json({
@@ -96,7 +104,10 @@ handler.createConversation = async (req, res) => {
 handler.sendMessage = async (req, res) => {
 	const { message, conversationId } = req.body;
 	try {
-		const conversation = await Conversation.findOne({ _id: conversationId });
+		const conversation = await Conversation.findOne({ _id: conversationId })
+			.populate('toUser', 'name avatar')
+			.populate('fromUser', 'name avatar')
+			.exec();
 
 		if (conversation) {
 			// save message
@@ -105,11 +116,22 @@ handler.sendMessage = async (req, res) => {
 				conversationId: conversation._id,
 				message
 			});
-			await newMessage.save();
+
+			const savedMessage = await newMessage.save();
 
 			// if conversation update last message
 			conversation.lastMessage = message;
 			await conversation.save();
+
+			global.io.emit('conversation', conversation);
+			global.io.emit(`newMessage.${conversationId}`, {
+				...savedMessage,
+				userInfo: {
+					_id: req.authUser._id,
+					name: req.authUser.name,
+					avatar: req.authUser.avatar
+				}
+			});
 
 			res.status(201).json({
 				success: true,
@@ -139,17 +161,10 @@ handler.getConversations = async (req, res) => {
 			.populate('fromUser', 'name avatar')
 			.sort('-updatedAt')
 			.exec();
-		if (docs.length > 0) {
-			res.status(200).json({
-				success: true,
-				conversations: docs
-			});
-		} else {
-			res.status(404).json({
-				success: false,
-				message: 'No conversation found'
-			});
-		}
+		res.status(200).json({
+			success: true,
+			conversations: docs
+		});
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -179,18 +194,11 @@ handler.getMessages = async (req, res) => {
 
 		// find all messages
 		const messages = await Message.find({ conversationId }).populate('userInfo', 'name avatar').exec();
-		if (messages.length > 0) {
-			res.status(200).json({
-				success: true,
-				messages,
-				chatHead
-			});
-		} else {
-			res.status(404).json({
-				success: false,
-				message: 'No message found'
-			});
-		}
+		res.status(200).json({
+			success: true,
+			messages,
+			chatHead
+		});
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({

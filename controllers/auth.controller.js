@@ -88,12 +88,11 @@ handler.register = async (req, res) => {
 			const user = await User.create(userData);
 			if (withLogin) {
 				const userObject = {
-					id: user._id,
+					_id: user._id,
 					name: user.name,
 					username: user.username,
 					email: user.email,
-					profile_photo_path: user.profile_photo_path,
-					created_at: user.created_at
+					avatar: null
 				};
 
 				// generate token
