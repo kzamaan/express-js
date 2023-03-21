@@ -4,8 +4,8 @@
 	"description": "Simple Express project",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon index",
-		"production": "NODE_ENV=production nodemon index",
+		"start": "node index",
+		"dev": "nodemon index",
 		"lint": "eslint --ext .js ."
 	},
 	"keywords": [
