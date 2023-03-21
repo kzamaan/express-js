@@ -7,16 +7,22 @@ const Message = require('@models/message.model');
 const handler = {};
 
 handler.sendMessage = async (req, res) => {
-	const { userId, message } = req.body;
+	const { userId, message, conversationId } = req.body;
 	try {
+		let conversation = null;
 		// check if conversation already exists
-		let conversation = await Conversation.findOne({
-			$or: [
-				{ toUser: userId, fromUser: req.authUser._id },
-				{ toUser: req.authUser._id, fromUser: userId }
-			]
-		});
-		console.log(conversation);
+		if (conversationId) {
+			conversation = await Conversation.findOne({ _id: conversationId });
+		} else {
+			conversation = await Conversation.findOne({
+				$or: [
+					{ toUser: userId, fromUser: req.authUser._id },
+					{ toUser: req.authUser._id, fromUser: userId }
+				]
+			});
+		}
+
+		// if not create new conversation
 		if (!conversation) {
 			const newConversation = new Conversation({
 				toUser: userId,
@@ -25,28 +31,30 @@ handler.sendMessage = async (req, res) => {
 			});
 			conversation = await newConversation.save();
 		}
-		// save message
-		const newMessage = new Message({
-			userInfo: req.authUser._id,
-			conversationId: conversation._id,
-			message
-		});
-		await newMessage.save();
 
-		// if conversation exists, update last message
 		if (conversation) {
+			// save message
+			const newMessage = new Message({
+				userInfo: req.authUser._id,
+				conversationId: conversation._id,
+				message
+			});
+			await newMessage.save();
+
+			// if conversation update last message
 			conversation.lastMessage = message;
 			await conversation.save();
-		}
 
-		res.status(201).json({
-			success: true,
-			data: {
-				conversationId: conversation._id,
-				userId: req.authUser._id,
-				message
-			}
-		});
+			res.status(201).json({
+				success: true,
+				message: newMessage
+			});
+		} else {
+			res.status(400).json({
+				success: false,
+				message: 'Something went wrong'
+			});
+		}
 	} catch (error) {
 		res.status(500).json({
 			success: false,
@@ -62,6 +70,7 @@ handler.getConversations = async (req, res) => {
 		const docs = await Conversation.find({ $or: [{ toUser: userId }, { fromUser: userId }] })
 			.populate('toUser', 'name avatar')
 			.populate('fromUser', 'name avatar')
+			.sort('-updatedAt')
 			.exec();
 		if (docs.length > 0) {
 			res.status(200).json({

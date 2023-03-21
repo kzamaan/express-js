@@ -69,7 +69,10 @@ handler.testMethod = (req, res) => {
 handler.getUsersList = async (req, res) => {
 	try {
 		// add pagination
-		const docs = await User.find().limit(100).exec();
+		//
+		const docs = await User.find({ _id: { $ne: req.authUser._id } })
+			.limit(100)
+			.exec();
 		if (docs.length > 0) {
 			res.status(200).json({
 				success: true,
