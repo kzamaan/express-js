@@ -27,7 +27,7 @@ handler.sendMessage = async (req, res) => {
 		}
 		// save message
 		const newMessage = new Message({
-			userId: req.authUser._id,
+			userInfo: req.authUser._id,
 			conversationId: conversation._id,
 			message
 		});
@@ -41,7 +41,6 @@ handler.sendMessage = async (req, res) => {
 
 		res.status(201).json({
 			success: true,
-			message: 'Message sent successfully',
 			data: {
 				conversationId: conversation._id,
 				userId: req.authUser._id,
@@ -67,18 +66,61 @@ handler.getConversations = async (req, res) => {
 		if (docs.length > 0) {
 			res.status(200).json({
 				success: true,
-				message: 'Conversation fetched successfully',
 				conversations: docs
 			});
 		} else {
 			res.status(404).json({
 				success: false,
-				message: 'No conversation found',
-				conversations: []
+				message: 'No conversation found'
 			});
 		}
 	} catch (error) {
-		res.status(500).json({ error });
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error
+		});
+	}
+};
+
+handler.getMessages = async (req, res) => {
+	const { conversationId } = req.params;
+
+	try {
+		// find conversation
+		const conversation = await Conversation.findOne({ _id: conversationId })
+			.populate('toUser', 'name avatar')
+			.populate('fromUser', 'name avatar')
+			.exec();
+
+		let chatHead = {};
+		if (conversation?.toUser?._id.toString() === req.authUser._id.toString()) {
+			chatHead = conversation?.fromUser;
+		} else {
+			chatHead = conversation?.toUser;
+		}
+
+		// find all messages
+		const messages = await Message.find({ conversationId }).populate('userInfo', 'name avatar').exec();
+		if (messages.length > 0) {
+			res.status(200).json({
+				success: true,
+				messages,
+				chatHead
+			});
+		} else {
+			res.status(404).json({
+				success: false,
+				message: 'No message found'
+			});
+		}
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error
+		});
 	}
 };
 
