@@ -12,10 +12,7 @@ const schema = new mongoose.Schema(
 			ref: 'User',
 			required: true
 		},
-		lastMessage: {
-			type: String,
-			required: true
-		}
+		lastMessage: String
 	},
 	{
 		timestamps: true

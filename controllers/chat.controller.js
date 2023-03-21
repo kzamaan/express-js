@@ -6,31 +6,97 @@ const Message = require('@models/message.model');
 // module scaffolding
 const handler = {};
 
-handler.sendMessage = async (req, res) => {
-	const { userId, message, conversationId } = req.body;
+// find existing conversation
+handler.findConversation = async (req, res) => {
+	const { userId } = req.params;
 	try {
-		let conversation = null;
-		// check if conversation already exists
-		if (conversationId) {
-			conversation = await Conversation.findOne({ _id: conversationId });
+		const conversation = await Conversation.findOne({
+			$or: [
+				{ toUser: userId, fromUser: req.authUser._id },
+				{ toUser: req.authUser._id, fromUser: userId }
+			]
+		});
+		if (conversation) {
+			res.status(200).json({
+				success: true,
+				conversation
+			});
 		} else {
-			conversation = await Conversation.findOne({
-				$or: [
-					{ toUser: userId, fromUser: req.authUser._id },
-					{ toUser: req.authUser._id, fromUser: userId }
-				]
+			res.status(404).json({
+				success: false,
+				message: 'No conversation found'
 			});
 		}
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error
+		});
+	}
+};
 
-		// if not create new conversation
+// if not create new conversation
+handler.createConversation = async (req, res) => {
+	const { userId, message } = req.body;
+	try {
+		const conversation = await Conversation.findOne({
+			$or: [
+				{ toUser: userId, fromUser: req.authUser._id },
+				{ toUser: req.authUser._id, fromUser: userId }
+			]
+		});
 		if (!conversation) {
 			const newConversation = new Conversation({
 				toUser: userId,
-				fromUser: req.authUser._id,
-				lastMessage: message
+				fromUser: req.authUser._id
 			});
-			conversation = await newConversation.save();
+			const savedConversation = await newConversation.save();
+
+			if (savedConversation) {
+				// save message
+				const newMessage = new Message({
+					userInfo: req.authUser._id,
+					conversationId: savedConversation._id,
+					message
+				});
+				await newMessage.save();
+
+				// if conversation update last message
+				savedConversation.lastMessage = message;
+				await savedConversation.save();
+
+				res.status(201).json({
+					success: true,
+					conversation: savedConversation,
+					message: newMessage
+				});
+			} else {
+				res.status(400).json({
+					success: false,
+					message: 'Something went wrong'
+				});
+			}
+		} else {
+			res.status(400).json({
+				success: false,
+				message: 'Conversation already exists'
+			});
 		}
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'Internal server error',
+			error
+		});
+	}
+};
+
+// send message
+handler.sendMessage = async (req, res) => {
+	const { message, conversationId } = req.body;
+	try {
+		const conversation = await Conversation.findOne({ _id: conversationId });
 
 		if (conversation) {
 			// save message
@@ -64,6 +130,7 @@ handler.sendMessage = async (req, res) => {
 	}
 };
 
+// get conversations
 handler.getConversations = async (req, res) => {
 	const { userId } = req.params;
 	try {
@@ -92,6 +159,7 @@ handler.getConversations = async (req, res) => {
 	}
 };
 
+// get messages
 handler.getMessages = async (req, res) => {
 	const { conversationId } = req.params;
 
