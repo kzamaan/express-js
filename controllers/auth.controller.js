@@ -105,8 +105,10 @@ handler.register = async (req, res) => {
 				// set cookie
 				res.cookie(process.env.COOKIE_NAME, accessToken, {
 					maxAge: process.env.JWT_EXPIRY,
-					httpOnly: process.env.NODE_ENV === 'production',
-					signed: true
+					httpOnly: !process.env.NODE_ENV === 'production',
+					secure: process.env.NODE_ENV === 'production',
+					signed: true,
+					sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'lax'
 				});
 
 				res.status(200).json({
