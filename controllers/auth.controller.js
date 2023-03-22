@@ -34,10 +34,10 @@ handler.login = async (req, res) => {
 				// set cookie
 				res.cookie(process.env.COOKIE_NAME, accessToken, {
 					maxAge: process.env.JWT_EXPIRY,
-					httpOnly: true,
+					httpOnly: process.env.NODE_ENV === 'production',
 					secure: process.env.NODE_ENV === 'production',
 					signed: true,
-					domain: process.env.NODE_ENV === 'production' ? 'rtk-chat-app-cyan.vercel.app' : 'localhost',
+					domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : 'localhost',
 					path: '/'
 				});
 
