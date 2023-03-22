@@ -36,7 +36,8 @@ handler.login = async (req, res) => {
 					maxAge: process.env.JWT_EXPIRY,
 					httpOnly: true,
 					secure: process.env.NODE_ENV === 'production',
-					signed: true
+					signed: true,
+					domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : 'localhost'
 				});
 
 				res.status(200).json({
