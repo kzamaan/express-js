@@ -37,7 +37,7 @@ handler.login = async (req, res) => {
 					httpOnly: process.env.NODE_ENV === 'production',
 					secure: process.env.NODE_ENV === 'production',
 					signed: true,
-					path: '/'
+					sameSite: 'none'
 				});
 
 				res.status(200).json({
