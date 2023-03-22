@@ -7,6 +7,7 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session');
 
 const baseRoute = require('@routes/index');
 const authRoute = require('@routes/auth');
@@ -37,6 +38,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // parse cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+	cookieSession({
+		secret: process.env.COOKIE_SECRET,
+		cookie: { domain: '.vercel.app' }
+	})
+);
 
 // set database connection
 require('@config/mongoose');
