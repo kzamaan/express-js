@@ -29,7 +29,7 @@
         ],
         "no-underscore-dangle": 0,
         "import/no-unresolved": 0,
-        "object-curly-newline": "warn"
+        "object-curly-newline": 0
     },
     "plugins": [
         "prettier"
