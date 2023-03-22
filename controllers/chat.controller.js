@@ -73,7 +73,13 @@ handler.createConversation = async (req, res) => {
 					.populate('fromUser', 'name avatar')
 					.exec();
 
-				global.io.emit('conversation', { conversation: populatedConversation });
+				// target conversation to user
+				const targetUser =
+					populatedConversation.toUser._id.toString() === req.authUser._id.toString()
+						? populatedConversation.fromUser._id
+						: populatedConversation.toUser._id;
+
+				global.io.emit(`conversation.${targetUser}`, populatedConversation);
 
 				res.status(201).json({
 					success: true,
@@ -123,9 +129,16 @@ handler.sendMessage = async (req, res) => {
 			conversation.lastMessage = message;
 			await conversation.save();
 
-			global.io.emit('conversation', conversation);
+			const targetUser =
+				conversation.toUser._id.toString() === req.authUser._id.toString()
+					? conversation.fromUser._id
+					: conversation.toUser._id;
+
+			global.io.emit(`conversation.${targetUser}`, conversation);
+
 			global.io.emit(`newMessage.${conversationId}`, {
 				...newMessage._doc,
+				targetUser,
 				userInfo: {
 					_id: req.authUser._id,
 					name: req.authUser.name,
