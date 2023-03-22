@@ -37,7 +37,8 @@ handler.login = async (req, res) => {
 					httpOnly: true,
 					secure: process.env.NODE_ENV === 'production',
 					signed: true,
-					domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : 'localhost'
+					domain: process.env.NODE_ENV === 'production' ? 'rtk-chat-app-cyan.vercel.app' : 'localhost',
+					path: '/'
 				});
 
 				res.status(200).json({
