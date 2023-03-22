@@ -42,7 +42,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 require('@config/mongoose');
 
 // api routes
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
 app.use('/api', baseRoute);
