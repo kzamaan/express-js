@@ -34,10 +34,10 @@ handler.login = async (req, res) => {
 				// set cookie
 				res.cookie(process.env.COOKIE_NAME, accessToken, {
 					maxAge: process.env.JWT_EXPIRY,
-					httpOnly: process.env.NODE_ENV === 'production',
+					httpOnly: !process.env.NODE_ENV === 'production',
 					secure: process.env.NODE_ENV === 'production',
 					signed: true,
-					sameSite: 'none'
+					sameSite: 'Lax'
 				});
 
 				res.status(200).json({
