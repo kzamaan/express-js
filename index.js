@@ -71,5 +71,7 @@ app.use(errorHandler);
 
 // start server
 server.listen(process.env.PORT, () => {
-	console.log(`Server is running on http://localhost:${process.env.PORT}`);
+	console.log(
+		`Server is running on http://localhost:${process.env.PORT} and application mode is ${process.env.NODE_ENV}`
+	);
 });
