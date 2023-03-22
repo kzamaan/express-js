@@ -37,7 +37,6 @@ handler.login = async (req, res) => {
 					httpOnly: process.env.NODE_ENV === 'production',
 					secure: process.env.NODE_ENV === 'production',
 					signed: true,
-					domain: process.env.NODE_ENV === 'production' ? '.vercel.app' : 'localhost',
 					path: '/'
 				});
 
