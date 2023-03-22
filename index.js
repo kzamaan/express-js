@@ -42,6 +42,9 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 require('@config/mongoose');
 
 // api routes
+app.use('/', (req, res) => {
+	res.send('Hello World!');
+});
 app.use('/api', baseRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/chat', chatRoute);
