@@ -3,11 +3,11 @@ const handler = {};
 
 // 404 error handler
 handler.notFoundErrorHandler = (req, res, next) => {
-	next('URL not found');
+	next({ message: 'URL not found' });
 };
 
 // global error handler
-handler.errorHandler = (err, req, res, next) => {
+handler.lastErrorHandler = (err, req, res, next) => {
 	if (res.headersSent) {
 		next(err);
 	} else if (err.message) {
@@ -19,7 +19,7 @@ handler.errorHandler = (err, req, res, next) => {
 		res.status(500).json({
 			success: false,
 			message: 'Internal server error',
-			stack: err?.stack
+			error: err
 		});
 	}
 };

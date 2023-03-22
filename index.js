@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 const baseRoute = require('@routes/index');
 const authRoute = require('@routes/auth');
 const chatRoute = require('@routes/chat');
-const { notFoundErrorHandler, errorHandler } = require('@middleware/errorHandler');
+const { notFoundErrorHandler, lastErrorHandler } = require('@middleware/errorHandler');
 
 // init express
 const app = express();
@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
 // url not found
 app.use(notFoundErrorHandler);
 // error handler
-app.use(errorHandler);
+app.use(lastErrorHandler);
 
 // start server
 server.listen(process.env.PORT, () => {
