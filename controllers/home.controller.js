@@ -73,19 +73,12 @@ handler.getUsersList = async (req, res) => {
 		const docs = await User.find({ _id: { $ne: req.authUser._id } })
 			.limit(100)
 			.exec();
-		if (docs.length > 0) {
-			res.status(200).json({
-				success: true,
-				message: 'Users fetched successfully',
-				users: docs
-			});
-		} else {
-			res.status(404).json({
-				success: false,
-				message: 'No videos found',
-				users: []
-			});
-		}
+
+		res.status(200).json({
+			success: true,
+			message: 'Users fetched successfully',
+			users: docs
+		});
 	} catch (err) {
 		res.status(500).json({
 			success: false,
@@ -101,20 +94,13 @@ handler.getVideoList = async (req, res) => {
 	try {
 		// add pagination
 		const docs = await Video.find({}).skip(skip).limit(limit).exec();
-		if (docs.length > 0) {
-			res.status(200).json({
-				success: true,
-				message: 'Videos fetched successfully',
-				videos: docs,
-				hasMore: docs.length === limit
-			});
-		} else {
-			res.status(404).json({
-				success: false,
-				message: 'No videos found',
-				videos: []
-			});
-		}
+
+		res.status(200).json({
+			success: true,
+			message: 'Videos fetched successfully',
+			videos: docs,
+			hasMore: docs.length === limit
+		});
 	} catch (err) {
 		res.status(500).json({
 			success: false,
