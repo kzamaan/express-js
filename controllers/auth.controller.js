@@ -35,7 +35,7 @@ handler.login = async (req, res) => {
 				res.cookie(process.env.COOKIE_NAME, accessToken, {
 					maxAge: process.env.JWT_EXPIRY,
 					httpOnly: !process.env.NODE_ENV === 'production',
-					secure: !process.env.NODE_ENV === 'production',
+					secure: process.env.NODE_ENV === 'production',
 					signed: true,
 					sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'lax'
 				});
@@ -117,12 +117,13 @@ handler.register = async (req, res) => {
 					user: userObject,
 					token: accessToken
 				});
+			} else {
+				res.status(201).json({
+					data: user,
+					message: 'User created successfully!',
+					success: true
+				});
 			}
-			res.status(201).json({
-				data: user,
-				message: 'User created successfully!',
-				success: true
-			});
 		} catch (error) {
 			console.log(error);
 		}

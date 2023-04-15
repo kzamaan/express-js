@@ -12,6 +12,7 @@ const baseRoute = require('@routes/index');
 const authRoute = require('@routes/auth');
 const chatRoute = require('@routes/chat');
 const { notFoundErrorHandler, lastErrorHandler } = require('@middleware/errorHandler');
+const { socketConnection } = require('@controllers/socket.controller');
 
 // init express
 const app = express();
@@ -49,23 +50,9 @@ app.use('/api', baseRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/chat', chatRoute);
 
-// initialize socket.io
-io.on('connection', (socket) => {
-	socket.emit('currentUser', socket.id);
-	console.log('New client connected', socket.id);
-
-	socket.on('disconnect', () => {
-		socket.broadcast.emit('callEnded');
-	});
-
-	socket.on('callUser', ({ userToCall, signalData, from, name }) => {
-		io.to(userToCall).emit('callUser', { signal: signalData, from, name });
-	});
-
-	socket.on('answerCall', (data) => {
-		io.to(data.to).emit('callAccepted', data.signal);
-	});
-});
+// initialize socket.io config for chat namespace
+const chat = io.of('/chat');
+chat.on('connection', socketConnection);
 
 // url not found
 app.use(notFoundErrorHandler);
