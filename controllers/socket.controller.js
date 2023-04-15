@@ -7,17 +7,21 @@ const rooms = {};
 
 handler.socketConnection = (socket) => {
 	// create room
-	socket.on('create-room', (data) => {
-		console.log('create-room', data);
+	const roomCreate = (userId) => {
 		const roomId = uuidV4();
-		socket.emit('room-created', roomId);
+		socket.emit('room-created', { roomId, userId });
 		rooms[roomId] = [];
-	});
+		const incomeCall = { roomId, userId };
+		socket.emit('incoming-call', incomeCall);
+	};
 
-	socket.on('join-room', ({ roomId, peerId }) => {
+	// join room
+	const joinRoom = ({ roomId, peerId }) => {
 		if (rooms[roomId]) {
-			console.log('join-room', peerId);
-			rooms[roomId].push(peerId);
+			// if peerId not in rooms[roomId] then push it
+			if (!rooms[roomId].includes(peerId)) {
+				rooms[roomId].push(peerId);
+			}
 			socket.join(roomId);
 			socket.to(roomId).emit('user-joined', { peerId });
 
@@ -35,7 +39,10 @@ handler.socketConnection = (socket) => {
 			}
 			socket.to(roomId).emit('user-disconnected', peerId);
 		});
-	});
+	};
+	// listen for events
+	socket.on('create-room', roomCreate);
+	socket.on('join-room', joinRoom);
 };
 
 // export module
