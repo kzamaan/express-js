@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
+const logger = require('@utilities/logger');
 
 (async () => {
 	try {
 		await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
-		console.log('MongoDB connected');
+		logger.info('MongoDB connected');
 	} catch (err) {
-		console.log(err);
+		logger.error(err);
 	}
 })();

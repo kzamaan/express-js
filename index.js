@@ -13,6 +13,7 @@ const authRoute = require('@routes/auth');
 const chatRoute = require('@routes/chat');
 const { notFoundErrorHandler, lastErrorHandler } = require('@middleware/errorHandler');
 const { socketConnection } = require('@controllers/socket.controller');
+const logger = require('@utilities/logger');
 
 // init express
 const app = express();
@@ -44,6 +45,7 @@ require('@config/mongoose');
 
 // api routes
 app.get('/', (req, res) => {
+	logger.info(`Incoming IP: ${req.ip}`);
 	res.send('Hello World!');
 });
 app.use('/api', baseRoute);
@@ -61,5 +63,5 @@ app.use(lastErrorHandler);
 
 // start server
 server.listen(process.env.PORT, () => {
-	console.log(`Server is running port on ${process.env.PORT} and env is ${process.env.NODE_ENV}`);
+	logger.info(`Server is running port on ${process.env.PORT} and env is ${process.env.NODE_ENV}`);
 });
