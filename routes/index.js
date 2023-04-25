@@ -23,5 +23,6 @@ router.get('/videos', auth, HomeController.getVideoList);
 router.get('/quiz', auth, HomeController.getQuizList);
 router.get('/answers', auth, HomeController.getAnswerList);
 router.get('/contacts', HomeController.getContactsList);
+router.get('/file-upload', HomeController.uploadImage);
 
 module.exports = router;

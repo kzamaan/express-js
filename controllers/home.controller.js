@@ -1,3 +1,4 @@
+const multer = require('multer');
 const Video = require('@models/video.model');
 const Quiz = require('@models/quiz.model');
 const Answer = require('@models/answer.model');
@@ -161,6 +162,14 @@ handler.getContactsList = async (req, res) => {
 			error
 		});
 	}
+};
+
+// upload based64 image by multer middleware
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+handler.uploadImage = (req, res) => {
+	res.send('upload image');
 };
 
 module.exports = handler;
