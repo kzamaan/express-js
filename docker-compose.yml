@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+    mongo:
+        image: mongo
+        container_name: mongo
+        ports:
+            - "27017:27017"
+        networks:
+            - express-network
+        volumes:
+            - mongo_data:/data/db
+    express:
+        image: kzamaan/express
+        container_name: express-app
+        ports:
+            - "8000:8000"
+        networks:
+            - express-network
+        volumes:
+            - express_data:/usr/share/express/data
+        environment:
+            - DEBUG=1
+            - APP_NAME=Express App
+            - PORT=8000
+            - APP_URL=http://localhost:8000
+            - MONGO_URI=mongodb://localhost:27017/express_quiz
+            - COOKIE_SECRET=7c4a8d09ca3762af61e59520943dc26494f8941b
+            - JWT_SECRET=AIRS2ihzUZ7RA4l5BcoGJo22phO/Gi7PHrF+P22g6c0
+            - JWT_EXPIRY=86400000
+            - COOKIE_NAME=_refresh_token
+        depends_on:
+            - mongo
+networks:
+    express-network:
+        driver: bridge
+volumes:
+    mongo_data:
+    express_data:
