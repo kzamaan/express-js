@@ -2,7 +2,7 @@ version: "3.8"
 services:
     mongo:
         image: mongo
-        container_name: mongo
+        container_name: mongo-database
         ports:
             - "27017:27017"
         networks:
@@ -10,7 +10,9 @@ services:
         volumes:
             - mongo_data:/data/db
     express:
-        image: kzamaan/express
+        build:
+            context: .
+            dockerfile: Dockerfile
         container_name: express-app
         ports:
             - "8000:8000"
@@ -19,11 +21,10 @@ services:
         volumes:
             - express_data:/usr/share/express/data
         environment:
-            - DEBUG=1
             - APP_NAME=Express App
             - PORT=8000
             - APP_URL=http://localhost:8000
-            - MONGO_URI=mongodb://localhost:27017/express
+            - MONGO_URI=mongodb://mongo:27017/express
             - COOKIE_SECRET=7c4a8d09ca3762af61e59520943dc26494f8941b
             - JWT_SECRET=AIRS2ihzUZ7RA4l5BcoGJo22phO/Gi7PHrF+P22g6c0
             - JWT_EXPIRY=86400000
