@@ -19,8 +19,8 @@ services:
         networks:
             - express-network
         volumes:
-            - ./:/app
-            - /app/node_modules
+            - ./:/app:ro # ro:Read only
+            - /app/node_modules # node_modules will be created in the container
         environment:
             - PORT=8000
             - NODE_ENV=development
