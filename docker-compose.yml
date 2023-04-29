@@ -19,10 +19,12 @@ services:
         networks:
             - express-network
         volumes:
-            - express_data:/usr/share/express/data
+            - ./:/app
+            - /app/node_modules
         environment:
-            - APP_NAME=Express App
             - PORT=8000
+            - NODE_ENV=development
+            - APP_NAME=Express App
             - APP_URL=http://localhost:8000
             - MONGO_URI=mongodb://mongo:27017/express
             - COOKIE_SECRET=7c4a8d09ca3762af61e59520943dc26494f8941b
@@ -40,4 +42,3 @@ networks:
 # Volumes
 volumes:
     mongo_data:
-    express_data:
