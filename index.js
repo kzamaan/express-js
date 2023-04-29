@@ -33,6 +33,7 @@ global.io = io;
 
 // set cors
 app.use(cors({ credentials: true, origin: true }));
+app.set('trust proxy');
 
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')));
