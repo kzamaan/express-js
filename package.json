@@ -1,47 +1,47 @@
 {
-	"name": "express",
-	"version": "1.0.0",
-	"description": "Simple Express project",
-	"main": "index.js",
-	"scripts": {
-		"dev": "nodemon index.js",
-		"start": "NODE_ENV=production node index.js"
-	},
-	"keywords": [
-		"Express App"
-	],
-	"author": "Kamruzzaman<kzamanbn@gmail.com>",
-	"dependencies": {
-		"bcrypt": "^5.1.0",
-		"cookie-parser": "^1.4.6",
-		"cookie-session": "^2.0.0",
-		"cors": "^2.8.5",
-		"dotenv": "^16.0.3",
-		"express": "^4.18.1",
-		"jsonwebtoken": "^9.0.0",
-		"module-alias": "^2.2.2",
-		"mongoose": "^7.0.2",
-		"multer": "^1.4.5-lts.1",
-		"nodemon": "^2.0.21",
-		"socket.io": "^4.6.1",
-		"uuid": "^9.0.0",
-		"winston": "^3.8.2"
-	},
-	"devDependencies": {
-		"eslint": "^8.2.0",
-		"eslint-config-airbnb-base": "^15.0.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-import": "^2.25.2",
-		"eslint-plugin-prettier": "^4.2.1",
-		"prettier": "^2.7.1"
-	},
-	"_moduleAliases": {
-		"@root": "./",
-		"@config": "./config",
-		"@controllers": "./controllers",
-		"@middleware": "./middleware",
-		"@models": "./models",
-		"@routes": "./routes",
-		"@utilities": "./utilities"
-	}
+    "name": "express",
+    "version": "1.0.0",
+    "description": "Simple Express project",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon -L index.js",
+        "start": "NODE_ENV=production node index.js"
+    },
+    "keywords": [
+        "Express App"
+    ],
+    "author": "Kamruzzaman<kzamanbn@gmail.com>",
+    "dependencies": {
+        "bcrypt": "^5.1.0",
+        "cookie-parser": "^1.4.6",
+        "cookie-session": "^2.0.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.1",
+        "jsonwebtoken": "^9.0.0",
+        "module-alias": "^2.2.2",
+        "mongoose": "^7.0.2",
+        "multer": "^1.4.5-lts.1",
+        "socket.io": "^4.6.1",
+        "uuid": "^9.0.0",
+        "winston": "^3.8.2"
+    },
+    "devDependencies": {
+        "eslint": "^8.2.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-import": "^2.25.2",
+        "eslint-plugin-prettier": "^4.2.1",
+        "nodemon": "^2.0.22",
+        "prettier": "^2.7.1"
+    },
+    "_moduleAliases": {
+        "@root": "./",
+        "@config": "./config",
+        "@controllers": "./controllers",
+        "@middleware": "./middleware",
+        "@models": "./models",
+        "@routes": "./routes",
+        "@utilities": "./utilities"
+    }
 }

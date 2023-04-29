@@ -31,9 +31,13 @@ services:
             - COOKIE_NAME=_refresh_token
         depends_on:
             - mongo
+
+# Networks
 networks:
     express-network:
         driver: bridge
+
+# Volumes
 volumes:
     mongo_data:
     express_data:

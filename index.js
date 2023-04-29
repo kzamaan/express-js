@@ -23,10 +23,10 @@ const server = http.createServer(app);
 
 // add socket.io
 const io = socketIo(server, {
-	cors: {
-		origin: '*', // process.env.CLIENT_URL,
-		methods: ['GET', 'POST']
-	}
+    cors: {
+        origin: '*', // process.env.CLIENT_URL,
+        methods: ['GET', 'POST']
+    }
 });
 
 global.io = io;
@@ -45,8 +45,8 @@ require('@config/mongoose');
 
 // api routes
 app.get('/', (req, res) => {
-	logger.info(`Incoming IP: ${req.ip}`);
-	res.send('Hello World!');
+    logger.info(`Incoming IP: ${req.ip}`);
+    res.send('Hello World!');
 });
 app.use('/api', baseRoute);
 app.use('/api/auth', authRoute);
@@ -63,5 +63,5 @@ app.use(lastErrorHandler);
 
 // start server
 server.listen(process.env.PORT, () => {
-	logger.info(`Server is running port on ${process.env.PORT} and env is ${process.env.NODE_ENV}`);
+    logger.info(`Server is running port on ${process.env.PORT} and env is ${process.env.NODE_ENV}`);
 });
