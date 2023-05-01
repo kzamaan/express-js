@@ -3,7 +3,7 @@ services:
     # MongoDB
     mongo:
         image: mongo
-        container_name: mongodb
+        container_name: mongo-database
         ports:
             - "27017:27017"
         networks:
