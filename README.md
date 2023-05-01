@@ -36,3 +36,11 @@ To run the application in scale mode
 ```bash
 docker-compose up -d --build --scale express-app=3
 ```
+
+## Show Application container Logs
+
+To show the application container logs
+
+```bash
+docker logs -f <container-name>
+```
