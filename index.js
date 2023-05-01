@@ -47,7 +47,7 @@ require('@config/mongoose');
 // api routes
 app.get('/', (req, res) => {
     logger.info(`Incoming IP: ${req.ip}`);
-    res.send('Hello World!');
+    res.send(`Hello World! From: ${req.ip}`);
 });
 app.use('/api', baseRoute);
 app.use('/api/auth', authRoute);
