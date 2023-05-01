@@ -1,17 +1,17 @@
 // dependency imports
 const express = require('express');
 const { cookieAuth: auth } = require('@middleware/authenticate');
-const HomeController = require('@controllers/home.controller');
-const AuthController = require('@controllers/auth.controller');
+const HomeController = require('@controllers/HomeController');
+const AuthController = require('@controllers/AuthController');
 
 const router = express.Router();
 
 // routes
 router.get('/', (req, res) => {
-	res.status(200).json({
-		success: true,
-		message: 'Welcome to the API'
-	});
+    res.status(200).json({
+        success: true,
+        message: 'Welcome to the API'
+    });
 });
 
 router.get('/test', HomeController.testMethod);

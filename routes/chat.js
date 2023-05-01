@@ -1,11 +1,11 @@
 const express = require('express');
 const {
-	getConversations,
-	getMessages,
-	sendMessage,
-	findConversation,
-	createConversation
-} = require('@controllers/chat.controller');
+    getConversations,
+    getMessages,
+    sendMessage,
+    findConversation,
+    createConversation
+} = require('@controllers/ChatController');
 
 const { cookieAuth: auth } = require('@middleware/authenticate');
 

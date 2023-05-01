@@ -12,7 +12,7 @@ const baseRoute = require('@routes/index');
 const authRoute = require('@routes/auth');
 const chatRoute = require('@routes/chat');
 const { notFoundErrorHandler, lastErrorHandler } = require('@middleware/errorHandler');
-const { socketConnection } = require('@controllers/socket.controller');
+const { socketConnection } = require('@controllers/SocketController');
 const logger = require('@utilities/logger');
 
 // init express
