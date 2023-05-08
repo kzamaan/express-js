@@ -8,6 +8,12 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
 
+const winston = require('winston');
+const expressWinston = require('express-winston');
+const winstonDaily = require('winston-daily-rotate-file');
+const winstonMongo = require('winston-mongodb');
+const { ElasticsearchTransport } = require('winston-elasticsearch');
+
 const baseRoute = require('./routes');
 const authRoute = require('./routes/auth');
 const chatRoute = require('./routes/chat');
@@ -45,6 +51,64 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // parse cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));
+
+const fileTransport = new winston.transports.DailyRotateFile({
+    filename: 'application-info-%DATE%.log',
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d',
+    dirname: path.join(__dirname, 'logs')
+});
+
+const esTransportOpts = {
+    level: 'info',
+    clientOpts: { node: 'http://localhost:9200/' },
+    indexPrefix: 'log'
+};
+
+const esTransport = new ElasticsearchTransport(esTransportOpts);
+
+const fileErrorTransport = new winston.transports.DailyRotateFile({
+    filename: 'application-error-%DATE%.log',
+    datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d',
+    dirname: path.join(__dirname, 'logs')
+});
+
+const mongoErrorTransport = new winston.transports.MongoDB({
+    db: process.env.MONGO_URI,
+    metaKey: 'meta'
+});
+
+const getLogMessage = (req, res) => {
+    const msgObj = {
+        correlationId: req.headers['x-correlation-id'],
+        requestBody: req.body
+    };
+
+    return JSON.stringify(msgObj);
+};
+
+const infoLogger = expressWinston.logger({
+    transports: [new winston.transports.Console(), fileTransport, esTransport],
+    format: winston.format.combine(winston.format.colorize(), winston.format.json()),
+    meta: false,
+    msg: getLogMessage
+});
+
+const errorLogger = expressWinston.errorLogger({
+    transports: [new winston.transports.Console(), fileErrorTransport, mongoErrorTransport, esTransport],
+    format: winston.format.combine(winston.format.colorize(), winston.format.json()),
+    meta: true,
+    msg: '{ "correlationId": "{{req.headers["x-correlation-id"]}}", "error" : "{{err.message}}" }',
+    correlationId: "{{req.headers['x-correlation-id']}}"
+});
+
+app.use(infoLogger);
+
 // api routes
 app.get('/', (req, res) => {
     logger.info(`Incoming IP: ${req.ip}`);
@@ -58,6 +122,7 @@ app.use('/api/chat', chatRoute);
 const chat = io.of('/chat');
 chat.on('connection', socketConnection);
 
+app.use(errorLogger);
 // error handler
 app.use(errorHandler);
 
