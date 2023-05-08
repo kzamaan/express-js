@@ -1,7 +1,5 @@
-// Description: Conversation controller
 // import dependencies
-const Conversation = require('@models/conversation');
-const Message = require('@models/message');
+const { Conversation, Message } = require('../models');
 
 // module scaffolding
 const handler = {};

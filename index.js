@@ -20,9 +20,11 @@ const mongoose = require('./config/mongoose');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const server = http.createServer(app);
 // init mongoose
 mongoose();
-const server = http.createServer(app);
+// request handler
+app.use(requestHandler);
 
 // add socket.io
 const io = socketIo(server, {
@@ -57,7 +59,6 @@ const chat = io.of('/chat');
 chat.on('connection', socketConnection);
 
 // error handler
-app.use(requestHandler);
 app.use(errorHandler);
 
 // start server

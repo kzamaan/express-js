@@ -1,5 +1,5 @@
 const multer = require('multer');
-const { Video, Quiz, Answer, Contact, User } = require('@models');
+const { Video, Quiz, Answer, Contact, User } = require('../models');
 
 // module scaffolding
 const handler = {};

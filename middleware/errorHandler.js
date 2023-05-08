@@ -3,7 +3,7 @@ const GeneralError = require('../utilities/GeneralError');
 // module scaffolding
 const handler = {};
 
-// 404 error handler
+// request handler
 handler.requestHandler = (req, res, next) => {
     let correlationId = req.headers['x-correlation-id'];
     if (!correlationId) {
@@ -12,7 +12,7 @@ handler.requestHandler = (req, res, next) => {
     }
 
     res.set('x-correlation-id', correlationId);
-    next();
+    return next();
 };
 
 // global error handler

@@ -5,9 +5,9 @@ const {
     sendMessage,
     findConversation,
     createConversation
-} = require('@controllers/ChatController');
+} = require('../controllers/ChatController');
 
-const { cookieAuth: auth } = require('@middleware/authenticate');
+const { cookieAuth: auth } = require('../middleware/authenticate');
 
 const router = express.Router();
 

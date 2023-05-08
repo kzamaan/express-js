@@ -1,8 +1,8 @@
 // dependency imports
 const express = require('express');
-const { cookieAuth: auth } = require('@middleware/authenticate');
-const HomeController = require('@controllers/HomeController');
-const AuthController = require('@controllers/AuthController');
+const { cookieAuth: auth } = require('../middleware/authenticate');
+const HomeController = require('../controllers/HomeController');
+const AuthController = require('../controllers/AuthController');
 
 const router = express.Router();
 
