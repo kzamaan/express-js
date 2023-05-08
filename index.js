@@ -8,17 +8,20 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
 
-const baseRoute = require('@routes/index');
-const authRoute = require('@routes/auth');
-const chatRoute = require('@routes/chat');
-const { notFoundErrorHandler, lastErrorHandler } = require('@middleware/errorHandler');
-const { socketConnection } = require('@controllers/SocketController');
-const logger = require('@utilities/logger');
+const baseRoute = require('./routes');
+const authRoute = require('./routes/auth');
+const chatRoute = require('./routes/chat');
+const { errorHandler, requestHandler } = require('./middleware/errorHandler');
+const { socketConnection } = require('./controllers/SocketController');
+const logger = require('./utilities/logger');
+const mongoose = require('./config/mongoose');
 
 // init express
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// init mongoose
+mongoose();
 const server = http.createServer(app);
 
 // add socket.io
@@ -40,10 +43,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // parse cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));
-
-// set database connection
-require('@config/mongoose');
-
 // api routes
 app.get('/', (req, res) => {
     logger.info(`Incoming IP: ${req.ip}`);
@@ -57,10 +56,9 @@ app.use('/api/chat', chatRoute);
 const chat = io.of('/chat');
 chat.on('connection', socketConnection);
 
-// url not found
-app.use(notFoundErrorHandler);
 // error handler
-app.use(lastErrorHandler);
+app.use(requestHandler);
+app.use(errorHandler);
 
 // start server
 server.listen(process.env.PORT, () => {
