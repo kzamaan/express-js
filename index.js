@@ -8,9 +8,9 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
 
-const configureRoutes = require('./controllers');
+const routes = require('./routes');
 const { errorHandler, requestHandler } = require('./middleware/errorHandler');
-const { socketConnection } = require('./controllers/SocketController');
+const { socketConnection } = require('./controllers/socket.controller');
 const { errorLogger, infoLogger, logger } = require('./utilities/logger');
 const mongoose = require('./config/mongoose');
 
@@ -50,11 +50,13 @@ app.get('/', (req, res) => {
     logger.info(`Incoming IP: ${req.ip}`);
     res.send(`Hello World! From: ${req.ip}`);
 });
-configureRoutes(app);
+app.use('/api', routes);
+
 // initialize socket.io config for chat namespace
 const chat = io.of('/chat');
 chat.on('connection', socketConnection);
 
+// error logger
 app.use(errorLogger);
 // error handler
 app.use(errorHandler);

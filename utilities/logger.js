@@ -1,7 +1,7 @@
+require('winston-mongodb');
+require('winston-daily-rotate-file');
 const { createLogger, format, transports } = require('winston');
 const expressWinston = require('express-winston');
-require('winston-daily-rotate-file');
-require('winston-mongodb');
 const { ElasticsearchTransport } = require('winston-elasticsearch');
 
 const path = require('path');
@@ -10,7 +10,7 @@ const logFormat = format.printf(
     ({ level, message, timestamp, stack }) => `${timestamp}: ${level} - ${stack || message}`
 );
 
-const devLogger = createLogger({
+const logger = createLogger({
     level: 'debug',
     format: format.combine(
         format.colorize({ colors: { info: 'blue', error: 'red', warn: 'yellow' } }),
@@ -20,26 +20,6 @@ const devLogger = createLogger({
     ),
     transports: [new transports.Console()]
 });
-
-const prodLogger = createLogger({
-    level: 'debug',
-    format: format.combine(format.timestamp(), format.errors({ stack: true }), format.json()),
-    transports: [
-        new transports.Console(),
-        new transports.File({
-            filename: 'error.log',
-            level: 'error',
-            dirname: path.resolve(__dirname, '..', '..', 'logs')
-        }),
-        new transports.File({
-            filename: 'combined.log',
-            level: 'debug',
-            dirname: path.resolve(__dirname, '..', '..', 'logs')
-        })
-    ]
-});
-
-const logger = process.env.NODE_ENV === 'production' ? prodLogger : devLogger;
 
 const fileTransport = new transports.DailyRotateFile({
     filename: 'application-info-%DATE%.log',
@@ -52,7 +32,7 @@ const fileTransport = new transports.DailyRotateFile({
 
 const esTransportOpts = {
     level: 'info',
-    clientOpts: { node: 'http://localhost:9200/' },
+    clientOpts: { node: 'http://localhost:9200' },
     indexPrefix: 'log-express'
 };
 
