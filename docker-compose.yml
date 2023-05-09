@@ -48,8 +48,11 @@ services:
             - JWT_SECRET=AIRS2ihzUZ7RA4l5BcoGJo22phO/Gi7PHrF+P22g6c0
             - JWT_EXPIRY=86400000
             - COOKIE_NAME=_refresh_token
+            - ELASTICSEARCH_HOST=elasticsearch
         depends_on:
             - mongo
+            - elasticsearch
+            - kibana
 
     # Nginx Server
     nginx-server:

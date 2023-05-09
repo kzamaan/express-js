@@ -9,11 +9,19 @@ const path = require('path');
 const logFormat = format.printf(
     ({ level, message, timestamp, stack }) => `${timestamp}: ${level} - ${stack || message}`
 );
+const colors = {
+    error: 'red',
+    warn: 'yellow',
+    info: 'blue',
+    http: 'green',
+    verbose: 'cyan',
+    debug: 'white'
+};
 
 const logger = createLogger({
     level: 'debug',
     format: format.combine(
-        format.colorize({ colors: { info: 'blue', error: 'red', warn: 'yellow' } }),
+        format.colorize({ colors }),
         format.timestamp({ format: 'DD/MM/YYYY || HH:mm:ss' }),
         format.errors({ stack: true }),
         logFormat
@@ -30,9 +38,11 @@ const fileTransport = new transports.DailyRotateFile({
     dirname: path.resolve(__dirname, '../storage/logs')
 });
 
+const HOST = process.env.ELASTICSEARCH_HOST || 'localhost';
+
 const esTransportOpts = {
     level: 'info',
-    clientOpts: { node: 'http://localhost:9200' },
+    clientOpts: { node: `http://${HOST}:9200` },
     indexPrefix: 'log-express'
 };
 
@@ -65,19 +75,7 @@ const getLogMessage = (req, res) => {
 const infoLogger = expressWinston.logger({
     transports: [
         new transports.Console({
-            format: format.combine(
-                format.colorize(),
-                format.cli({
-                    colors: {
-                        error: 'red',
-                        warn: 'yellow',
-                        info: 'blue',
-                        http: 'green',
-                        verbose: 'cyan',
-                        debug: 'white'
-                    }
-                })
-            ),
+            format: format.combine(format.colorize(), format.cli({ colors })),
             handleExceptions: true
         }),
         fileTransport,
@@ -91,19 +89,7 @@ const infoLogger = expressWinston.logger({
 const errorLogger = expressWinston.errorLogger({
     transports: [
         new transports.Console({
-            format: format.combine(
-                format.colorize(),
-                format.cli({
-                    colors: {
-                        error: 'red',
-                        warn: 'yellow',
-                        info: 'blue',
-                        http: 'green',
-                        verbose: 'cyan',
-                        debug: 'white'
-                    }
-                })
-            ),
+            format: format.combine(format.colorize(), format.cli({ colors })),
             handleExceptions: true
         }),
         fileErrorTransport,

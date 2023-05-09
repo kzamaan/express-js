@@ -12,7 +12,8 @@ const routes = require('./routes');
 const { errorHandler, requestHandler } = require('./middleware/errorHandler');
 const { socketConnection } = require('./controllers/socket.controller');
 const { errorLogger, infoLogger, logger } = require('./utilities/logger');
-const mongoose = require('./config/mongoose');
+const mongooseConnect = require('./config/mongoose');
+const { NotFound } = require('./utilities/errors');
 
 // init express
 const app = express();
@@ -20,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 // init mongoose
-mongoose();
+mongooseConnect();
 // request handler
 app.use(infoLogger);
 app.use(requestHandler);
@@ -45,16 +46,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // parse cookies
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
-// api routes
+// initialize socket.io config for chat namespace
+const chat = io.of('/chat');
+chat.on('connection', socketConnection);
+
+// app routes
 app.get('/', (req, res) => {
     logger.info(`Incoming IP: ${req.ip}`);
     res.send(`Hello World! From: ${req.ip}`);
 });
+// api routes
 app.use('/api', routes);
 
-// initialize socket.io config for chat namespace
-const chat = io.of('/chat');
-chat.on('connection', socketConnection);
+// catch 404 and forward to error handler
+app.use((req, res, next) => {
+    next(new NotFound('URL Not Found'));
+});
 
 // error logger
 app.use(errorLogger);
