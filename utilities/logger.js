@@ -63,14 +63,53 @@ const getLogMessage = (req, res) => {
 };
 
 const infoLogger = expressWinston.logger({
-    transports: [new transports.Console(), fileTransport, esTransport],
+    transports: [
+        new transports.Console({
+            format: format.combine(
+                format.colorize(),
+                format.cli({
+                    colors: {
+                        error: 'red',
+                        warn: 'yellow',
+                        info: 'blue',
+                        http: 'green',
+                        verbose: 'cyan',
+                        debug: 'white'
+                    }
+                })
+            ),
+            handleExceptions: true
+        }),
+        fileTransport,
+        esTransport
+    ],
     format: format.combine(format.colorize(), format.json()),
     meta: false,
     msg: getLogMessage
 });
 
 const errorLogger = expressWinston.errorLogger({
-    transports: [new transports.Console(), fileErrorTransport, mongoErrorTransport, esTransport],
+    transports: [
+        new transports.Console({
+            format: format.combine(
+                format.colorize(),
+                format.cli({
+                    colors: {
+                        error: 'red',
+                        warn: 'yellow',
+                        info: 'blue',
+                        http: 'green',
+                        verbose: 'cyan',
+                        debug: 'white'
+                    }
+                })
+            ),
+            handleExceptions: true
+        }),
+        fileErrorTransport,
+        mongoErrorTransport,
+        esTransport
+    ],
     format: format.combine(format.colorize(), format.json()),
     meta: true,
     msg: '{ "correlationId": "{{req.headers["x-correlation-id"]}}", "error" : "{{err.message}}" }',
