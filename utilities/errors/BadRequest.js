@@ -1,13 +1,14 @@
 const GeneralError = require('./GeneralError');
 
 class BadRequest extends GeneralError {
-    constructor(message) {
+    constructor(message, code) {
         super(message);
         this.name = 'BadRequest';
+        this.code = code;
     }
 
     getCode() {
-        return 400;
+        return this.code || 400;
     }
 }
 

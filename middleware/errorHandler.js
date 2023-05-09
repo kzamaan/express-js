@@ -1,4 +1,4 @@
-const GeneralError = require('../utilities/GeneralError');
+const GeneralError = require('../utilities/errors/GeneralError');
 
 // module scaffolding
 const handler = {};

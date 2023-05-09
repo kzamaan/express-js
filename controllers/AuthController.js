@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const Unauthorized = require('../utilities/Unauthorized');
-const Unprocessable = require('../utilities/Unprocessable');
+const BadRequest = require('../utilities/errors/BadRequest');
 
 // module scaffolding
 const handler = {};
@@ -49,10 +48,10 @@ handler.login = async (req, res, next) => {
                     token: accessToken
                 });
             } else {
-                throw new Unauthorized('Invalid credentials!');
+                throw new BadRequest('Invalid credentials!', 401);
             }
         } else {
-            throw new Unauthorized('Invalid credentials!');
+            throw new BadRequest('Invalid credentials!', 401);
         }
     } catch (err) {
         return next(err, req, res);
@@ -116,7 +115,7 @@ handler.register = async (req, res, next) => {
                 return next(err, req, res);
             }
         } else {
-            return next(new Unprocessable('User already exists!'), req, res);
+            return next(new BadRequest('User already exists!', 422), req, res);
         }
     }
 };

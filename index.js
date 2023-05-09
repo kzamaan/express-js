@@ -64,7 +64,7 @@ const fileTransport = new winston.transports.DailyRotateFile({
 const esTransportOpts = {
     level: 'info',
     clientOpts: { node: 'http://localhost:9200/' },
-    indexPrefix: 'log'
+    indexPrefix: 'log-express'
 };
 
 const esTransport = new ElasticsearchTransport(esTransportOpts);
@@ -80,7 +80,8 @@ const fileErrorTransport = new winston.transports.DailyRotateFile({
 
 const mongoErrorTransport = new winston.transports.MongoDB({
     db: process.env.MONGO_URI,
-    metaKey: 'meta'
+    metaKey: 'meta',
+    collection: 'logs'
 });
 
 const getLogMessage = (req, res) => {
