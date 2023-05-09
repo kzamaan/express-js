@@ -97,6 +97,8 @@ const errorLogger = expressWinston.errorLogger({
     correlationId: "{{req.headers['x-correlation-id']}}"
 });
 
-module.exports = logger;
-module.exports.infoLogger = infoLogger;
-module.exports.errorLogger = errorLogger;
+module.exports = {
+    logger,
+    infoLogger,
+    errorLogger
+};

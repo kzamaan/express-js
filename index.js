@@ -13,7 +13,7 @@ const authRoute = require('./routes/auth');
 const chatRoute = require('./routes/chat');
 const { errorHandler, requestHandler } = require('./middleware/errorHandler');
 const { socketConnection } = require('./controllers/SocketController');
-const { errorLogger, infoLogger } = require('./utilities/logger');
+const { errorLogger, infoLogger, logger } = require('./utilities/logger');
 const mongoose = require('./config/mongoose');
 
 // init express
@@ -49,7 +49,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // api routes
 app.get('/', (req, res) => {
-    console.log(`Incoming IP: ${req.ip}`);
+    logger.info(`Incoming IP: ${req.ip}`);
     res.send(`Hello World! From: ${req.ip}`);
 });
 app.use('/api', baseRoute);
@@ -66,5 +66,5 @@ app.use(errorHandler);
 
 // start server
 server.listen(process.env.PORT, () => {
-    console.log(`Server is running port on ${process.env.PORT} and env is ${process.env.NODE_ENV}`);
+    logger.info(`Server is running port on ${process.env.PORT} and env is ${process.env.NODE_ENV}`);
 });

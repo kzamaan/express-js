@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const logger = require('@utilities/logger');
+const { logger } = require('@utilities/logger');
 
 module.exports = async () => {
     try {
