@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const express = require('express');
 const { User } = require('../models');
-const BadRequest = require('../utilities/errors/BadRequest');
+const { BadRequest } = require('../utilities/errors');
 
 const router = express.Router();
 
@@ -43,7 +43,6 @@ const login = async (req, res, next) => {
 
                 res.status(200).json({
                     message: 'Login successful!',
-                    success: true,
                     user: userObject,
                     token: accessToken
                 });
@@ -60,63 +59,58 @@ const login = async (req, res, next) => {
 
 const register = async (req, res, next) => {
     const { name, email, password, withLogin } = req.body;
-    if (!name || !email) {
-        res.status(422).json({
-            message: 'Name and email are required!'
-        });
-    } else {
-        const checkUser = await User.findOne({ email });
-        if (!checkUser) {
-            const encryptedPassword = await bcrypt.hash(password, 10);
-            const userData = {
-                name,
-                email,
-                password: encryptedPassword
-            };
-            try {
-                const user = await User.create(userData);
-                if (withLogin) {
-                    const userObject = {
-                        _id: user._id,
-                        name: user.name,
-                        username: user.username,
-                        email: user.email,
-                        avatar: null
-                    };
+    if (!name || !email || !password) {
+        return next(new BadRequest('Name and email are required!', 422), req, res);
+    }
+    const checkUser = await User.findOne({ email });
+    if (!checkUser) {
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const userData = {
+            name,
+            email,
+            password: encryptedPassword
+        };
+        try {
+            const user = await User.create(userData);
+            if (withLogin) {
+                const userObject = {
+                    _id: user._id,
+                    name: user.name,
+                    username: user.username,
+                    email: user.email,
+                    avatar: null
+                };
 
-                    // generate token
-                    const accessToken = jwt.sign(userObject, process.env.JWT_SECRET, {
-                        expiresIn: process.env.JWT_EXPIRY
-                    });
+                // generate token
+                const accessToken = jwt.sign(userObject, process.env.JWT_SECRET, {
+                    expiresIn: process.env.JWT_EXPIRY
+                });
 
-                    // set cookie
-                    res.cookie(process.env.COOKIE_NAME, accessToken, {
-                        maxAge: process.env.JWT_EXPIRY,
-                        httpOnly: !process.env.NODE_ENV === 'production',
-                        secure: process.env.NODE_ENV === 'production',
-                        signed: true,
-                        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'lax'
-                    });
+                // set cookie
+                res.cookie(process.env.COOKIE_NAME, accessToken, {
+                    maxAge: process.env.JWT_EXPIRY,
+                    httpOnly: !process.env.NODE_ENV === 'production',
+                    secure: process.env.NODE_ENV === 'production',
+                    signed: true,
+                    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'lax'
+                });
 
-                    res.status(200).json({
-                        message: 'Login successful!',
-                        success: true,
-                        user: userObject,
-                        token: accessToken
-                    });
-                } else {
-                    res.status(201).json({
-                        data: user,
-                        message: 'User created successfully!',
-                        success: true
-                    });
-                }
-            } catch (err) {
-                return next(err, req, res);
+                res.status(200).json({
+                    message: 'Registration successful!',
+                    user: userObject,
+                    token: accessToken
+                });
+            } else {
+                res.status(201).json({
+                    data: user,
+                    message: 'User created successfully!'
+                });
             }
-        } else {
-            return next(new BadRequest('User already exists!', 422), req, res);
+        } catch (err) {
+            return next(err, req, res);
         }
+    } else {
+        return next(new BadRequest('User already exists!', 422), req, res);
     }
 };
 
