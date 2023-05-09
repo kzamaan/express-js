@@ -1,11 +1,12 @@
 // import dependencies
+const express = require('express');
 const { Conversation, Message } = require('../models');
+const { cookieAuth: auth } = require('../middleware/authenticate');
 
-// module scaffolding
-const handler = {};
+const router = express.Router();
 
 // find existing conversation
-handler.findConversation = async (req, res) => {
+const findConversation = async (req, res) => {
     const { userId } = req.params;
     try {
         const conversation = await Conversation.findOne({
@@ -35,7 +36,7 @@ handler.findConversation = async (req, res) => {
 };
 
 // if not create new conversation
-handler.createConversation = async (req, res) => {
+const createConversation = async (req, res) => {
     const { userId, message } = req.body;
     try {
         const existsConversation = await Conversation.findOne({
@@ -105,7 +106,7 @@ handler.createConversation = async (req, res) => {
 };
 
 // send message
-handler.sendMessage = async (req, res) => {
+const sendMessage = async (req, res) => {
     const { message, conversationId } = req.body;
     try {
         const conversation = await Conversation.findOne({ _id: conversationId })
@@ -164,7 +165,7 @@ handler.sendMessage = async (req, res) => {
 };
 
 // get conversations
-handler.getConversations = async (req, res) => {
+const getConversations = async (req, res) => {
     const { userId } = req.params;
     try {
         const docs = await Conversation.find({ $or: [{ toUser: userId }, { fromUser: userId }] })
@@ -186,7 +187,7 @@ handler.getConversations = async (req, res) => {
 };
 
 // get messages
-handler.getMessages = async (req, res) => {
+const getMessages = async (req, res) => {
     const { conversationId } = req.params;
 
     try {
@@ -220,4 +221,10 @@ handler.getMessages = async (req, res) => {
     }
 };
 
-module.exports = handler;
+router.get('/find-conversation/:userId', auth, findConversation);
+router.post('/create-conversation', auth, createConversation);
+router.post('/send-message', auth, sendMessage);
+router.get('/get-conversations/:userId', auth, getConversations);
+router.get('/get-messages/:conversationId', auth, getMessages);
+
+module.exports = router;

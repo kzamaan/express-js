@@ -1,12 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const express = require('express');
+const { User } = require('../models');
 const BadRequest = require('../utilities/errors/BadRequest');
 
-// module scaffolding
-const handler = {};
+const router = express.Router();
 
-handler.login = async (req, res, next) => {
+const login = async (req, res, next) => {
     try {
         // find a user who has this email/username
         const { username, password } = req.body;
@@ -38,7 +38,7 @@ handler.login = async (req, res, next) => {
                     httpOnly: !process.env.NODE_ENV === 'production',
                     secure: process.env.NODE_ENV === 'production',
                     signed: true,
-                    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'lax'
+                    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
                 });
 
                 res.status(200).json({
@@ -58,7 +58,7 @@ handler.login = async (req, res, next) => {
     }
 };
 
-handler.register = async (req, res, next) => {
+const register = async (req, res, next) => {
     const { name, email, password, withLogin } = req.body;
     if (!name || !email) {
         res.status(422).json({
@@ -120,22 +120,7 @@ handler.register = async (req, res, next) => {
     }
 };
 
-// do logout
-handler.logout = (req, res) => {
-    res.clearCookie(process.env.COOKIE_NAME);
-    res.json({
-        message: 'Logout successful!',
-        success: true
-    });
-};
+router.post('/login', login);
+router.post('/register', register);
 
-// get current user
-handler.refreshToken = (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'Current user',
-        user: req.authUser
-    });
-};
-
-module.exports = handler;
+module.exports = router;

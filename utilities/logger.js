@@ -47,7 +47,7 @@ const fileTransport = new transports.DailyRotateFile({
     zippedArchive: true,
     maxSize: '20m',
     maxFiles: '14d',
-    dirname: path.resolve(__dirname, '../logs')
+    dirname: path.resolve(__dirname, '../storage/logs')
 });
 
 const esTransportOpts = {
@@ -64,7 +64,7 @@ const fileErrorTransport = new transports.DailyRotateFile({
     zippedArchive: true,
     maxSize: '20m',
     maxFiles: '14d',
-    dirname: path.resolve(__dirname, '../logs')
+    dirname: path.resolve(__dirname, '../storage/logs')
 });
 
 const mongoErrorTransport = new transports.MongoDB({
