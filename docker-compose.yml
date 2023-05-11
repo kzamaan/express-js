@@ -9,7 +9,7 @@ services:
         networks:
             - express-network
         volumes:
-            - mongo_data:/data/db
+            - mongo:/data/db
     elasticsearch:
         image: elasticsearch:7.9.2
         container_name: elasticsearch
@@ -20,16 +20,16 @@ services:
         networks:
             - express-network
         volumes:
-        - elasticsearch_data:/usr/share/elasticsearch/data
+        - elasticsearch:/usr/share/elasticsearch/data
     kibana:
         image: kibana:7.9.2
-        container_name: kibana
+        container_name: kibana-server
         ports:
             - "5601:5601"
         networks:
             - express-network
         volumes:
-            - kibana_data:/usr/share/kibana/data
+            - kibana:/usr/share/kibana/data
     # Express App
     express-app:
         build: .
@@ -48,7 +48,7 @@ services:
             - JWT_SECRET=AIRS2ihzUZ7RA4l5BcoGJo22phO/Gi7PHrF+P22g6c0
             - JWT_EXPIRY=86400000
             - COOKIE_NAME=_refresh_token
-            - ELASTICSEARCH_HOST=elasticsearch
+            - ELASTICSEARCH_HOST=http://elasticsearch:9200
         depends_on:
             - mongo
             - elasticsearch
@@ -57,6 +57,7 @@ services:
     # Nginx Server
     nginx-server:
         image: nginx:alpine
+        container_name: nginx-server
         restart: unless-stopped
         ports:
             - "8000:80"
@@ -74,6 +75,6 @@ networks:
 
 # Volumes
 volumes:
-    mongo_data: ~
-    elasticsearch_data: ~
-    kibana_data: ~
+    mongo: ~
+    kibana: ~
+    elasticsearch: ~

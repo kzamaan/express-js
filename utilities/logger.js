@@ -38,11 +38,11 @@ const fileTransport = new transports.DailyRotateFile({
     dirname: path.resolve(__dirname, '../storage/logs')
 });
 
-const HOST = process.env.ELASTICSEARCH_HOST || 'localhost';
+const HOST = process.env.ELASTICSEARCH_HOST || 'http://localhost:9200';
 
 const esTransportOpts = {
     level: 'info',
-    clientOpts: { node: `http://${HOST}:9200` },
+    clientOpts: { node: HOST },
     indexPrefix: 'log-express'
 };
 
