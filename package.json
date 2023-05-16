@@ -3,9 +3,12 @@
     "version": "1.0.0",
     "description": "Simple Express project",
     "main": "index.js",
+    "engines": {
+        "node": "16.x"
+    },
     "scripts": {
         "dev": "nodemon -L index.js",
-        "start": "NODE_ENV=production node index.js"
+        "start": "node index.js"
     },
     "keywords": [
         "Express App"
