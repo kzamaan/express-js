@@ -11,6 +11,7 @@ Simple Basic Express Js application
 - Chat Application (Socket.io)
 - Dockerize Application
 - Scale Application
+- Logging (Winston)
 
 ## Run Application
 
